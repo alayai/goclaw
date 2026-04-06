@@ -42,8 +42,11 @@ dist/
 gateway/ui_dist/**
 !gateway/ui_dist/placeholder-for-embed.txt
 
-goclaw
-!goclaw/
+# Backend Go binary / local build output (make build, scripts/build-full.ps1, manual go build -o …)
+/goclaw
+/goclaw.exe
+/goclaw_*
+/bin/
 
 config.json
 google_search_results.json
