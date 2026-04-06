@@ -5,7 +5,7 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "qianfan/kimi-k2.5"
+        "primary": "siliconflow/Pro/moonshotai/Kimi-K2.5"
       },
       "max_iterations": 20,
       "temperature": 0.7,
@@ -15,15 +15,15 @@
   "models": {
     "mode": "merge",
     "providers": {
-      "qianfan": {
-        "baseUrl": "https://qianfan.baidubce.com/v2",
-        "apiKey": "QIANFAN_API_KEY",
+      "siliconflow": {
+        "baseUrl": "https://api.siliconflow.cn/v1",
+        "apiKey": "${SILICONFLOW_API_KEY}",
         "api": "openai-completions",
         "models": [
           {
-            "id": "kimi-k2.5",
-            "name": "Kimi K2.5",
-            "contextWindow": 131072,
+            "id": "Pro/moonshotai/Kimi-K2.5",
+            "name": "Kimi-K2.5 (Pro)",
+            "contextWindow": 262144,
             "maxTokens": 8192,
             "input": ["text", "image"]
           }
@@ -47,7 +47,7 @@
       "app_id": "cli_xxxxxxxx",
       "app_secret": "xxxxxxx",
       "domain": "feishu",
-      "groupPolicy": "open",
+      "group_policy": "open",
       "dm_policy": "pairing"
     },
     "qq": {

@@ -62,8 +62,8 @@ func Load(configPath string) (*Config, error) {
 
 // setDefaults 设置默认配置值
 func setDefaults(v *viper.Viper) {
-	// Agent 默认配置
-	v.SetDefault("agents.defaults.model", "openrouter/anthropic/claude-opus-4-5")
+	// Agent 默认配置（与硅基流动默认模型一致；勿对 agents.defaults.model 设字符串，否则会干扰嵌套 primary 解析）
+	v.SetDefault("agents.defaults.model.primary", "siliconflow/Pro/moonshotai/Kimi-K2.5")
 	v.SetDefault("agents.defaults.max_iterations", 15)
 	v.SetDefault("agents.defaults.temperature", 0.7)
 	v.SetDefault("agents.defaults.max_tokens", 4096)

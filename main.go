@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"runtime"
 
 	"github.com/smallnest/goclaw/cli"
@@ -28,15 +29,14 @@ func main() {
 	}
 }
 
-// setupStackDumpSignal sets up a signal handler for SIGUSR1/SIGQUIT
-// to dump all goroutine stack traces without terminating the program.
-// This is useful for debugging "stuck" or slow applications.
+// setupStackDumpSignal registers a handler that dumps all goroutine stacks on SIGINT
+// (Ctrl+C / os.Interrupt). This works on every GOOS and keeps `go run main.go` valid.
+// (Unix-only SIGUSR1/SIGQUIT dumps were removed so signal setup stays in this file.)
 //
-// Usage: kill -SIGUSR1 <pid> or kill -SIGQUIT <pid>
 // Based on: https://colobu.com/2016/12/21/how-to-dump-goroutine-stack-traces/
 func setupStackDumpSignal() {
 	ch := make(chan os.Signal, 1)
-	notifyStackDumpSignal(ch)
+	signal.Notify(ch, os.Interrupt)
 
 	go func() {
 		for range ch {

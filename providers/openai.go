@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/smallnest/goclaw/internal/logger"
@@ -28,6 +29,7 @@ func NewOpenAIProvider(apiKey, baseURL, model string, maxTokens int) (*OpenAIPro
 
 // NewOpenAIProviderWithTimeout 创建带超时的 OpenAI 提供商
 func NewOpenAIProviderWithTimeout(apiKey, baseURL, model string, maxTokens int, timeout time.Duration) (*OpenAIProvider, error) {
+	apiKey = strings.TrimSpace(apiKey)
 	if apiKey == "" {
 		return nil, fmt.Errorf("API key is required")
 	}
@@ -45,14 +47,21 @@ func NewOpenAIProviderWithTimeout(apiKey, baseURL, model string, maxTokens int, 
 		opts = append(opts, openai.WithBaseURL(baseURL))
 	}
 
-	// 设置超时
-	if timeout > 0 {
-		httpClient := &http.Client{
-			Timeout: timeout,
+	// SiliconFlow returns {code,message} on errors; langchaingo expects OpenAI {error:{message}}.
+	// Use a rewriting transport so failures surface a readable message instead of "400: ".
+	if timeout > 0 || strings.Contains(strings.ToLower(baseURL), "siliconflow") {
+		var tr http.RoundTripper = http.DefaultTransport
+		if strings.Contains(strings.ToLower(baseURL), "siliconflow") {
+			tr = &siliconflowErrorRewriter{base: http.DefaultTransport}
 		}
-		opts = append(opts, openai.WithHTTPClient(httpClient))
-		logger.Info("OpenAI provider configured with timeout",
-			zap.Duration("timeout", timeout))
+		opts = append(opts, openai.WithHTTPClient(&http.Client{
+			Timeout:   timeout,
+			Transport: tr,
+		}))
+		if timeout > 0 {
+			logger.Info("OpenAI provider configured with timeout",
+				zap.Duration("timeout", timeout))
+		}
 	}
 
 	llm, err := openai.New(opts...)

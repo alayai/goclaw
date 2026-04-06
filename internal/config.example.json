@@ -5,11 +5,11 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "qianfan/kimi-k2.5"
+        "primary": "siliconflow/Pro/moonshotai/Kimi-K2.5"
       },
-      "max_iterations": 15,
+      "max_iterations": 20,
       "temperature": 0.7,
-      "max_tokens": 4096
+      "max_tokens": 64000
     }
   },
   "channels": {
@@ -28,7 +28,8 @@
       "app_id": "",
       "app_secret": "",
       "domain": "feishu",
-      "group_policy": "open"
+      "group_policy": "open",
+      "dm_policy": "pairing"
     },
     "qq": {
       "enabled": false,
@@ -64,20 +65,20 @@
       "token": "",
       "signing_secret": "",
       "allowed_ids": []
-    },
+    }
   },
   "models": {
     "mode": "merge",
     "providers": {
-      "qianfan": {
-        "baseUrl": "https://qianfan.baidubce.com/v2",
-        "apiKey": "QIANFAN_API_KEY",
+      "siliconflow": {
+        "baseUrl": "https://api.siliconflow.cn/v1",
+        "apiKey": "${SILICONFLOW_API_KEY}",
         "api": "openai-completions",
         "models": [
           {
-            "id": "kimi-k2.5",
-            "name": "Kimi K2.5",
-            "contextWindow": 131072,
+            "id": "Pro/moonshotai/Kimi-K2.5",
+            "name": "Kimi-K2.5 (Pro)",
+            "contextWindow": 262144,
             "maxTokens": 8192,
             "input": ["text", "image"]
           }

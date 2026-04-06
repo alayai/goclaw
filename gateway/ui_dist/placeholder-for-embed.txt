@@ -1,0 +1,2 @@
+This file exists so `//go:embed ui_dist` succeeds when the Vite build has not been copied here yet.
+Run `scripts/build-full.ps1` (or `npm run build` in `ui/` and copy `ui/dist` to `gateway/ui_dist`) before releasing or to use the control panel UI.

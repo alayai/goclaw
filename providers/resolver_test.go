@@ -397,3 +397,11 @@ func TestResolvedProvider_GetContextWindow(t *testing.T) {
 		})
 	}
 }
+
+func TestNormalizeSiliconFlowAPIKey(t *testing.T) {
+	raw := "sk-abc def\n"
+	want := "sk-abcdef"
+	if got := normalizeSiliconFlowAPIKey(raw); got != want {
+		t.Fatalf("got %q want %q", got, want)
+	}
+}

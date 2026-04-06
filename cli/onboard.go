@@ -38,7 +38,7 @@ func init() {
 	onboardCmd.Flags().StringVarP(&onboardAPIKey, "api-key", "k", "", "API key for the provider (required in non-interactive mode)")
 	onboardCmd.Flags().StringVarP(&onboardBaseURL, "base-url", "u", "", "Base URL for the provider API")
 	onboardCmd.Flags().StringVarP(&onboardModel, "model", "m", "", "Model name to use")
-	onboardCmd.Flags().StringVarP(&onboardProvider, "provider", "p", "qianfan", "Provider name (e.g., qianfan, openai, anthropic, openrouter)")
+	onboardCmd.Flags().StringVarP(&onboardProvider, "provider", "p", "siliconflow", "Provider name (e.g., siliconflow, openai, anthropic, openrouter)")
 	onboardCmd.Flags().BoolVar(&onboardSkipPrompts, "skip-prompts", false, "Skip all prompts (use defaults)")
 }
 
@@ -175,6 +175,7 @@ func interactiveSetup(cfg *config.Config) error {
 	} else {
 		fmt.Println("  Let's configure your LLM provider.")
 		fmt.Println("  Supported providers:")
+		fmt.Println("    - siliconflow (硅基流动，默认)")
 		fmt.Println("    - qianfan (百度千帆)")
 		fmt.Println("    - openai")
 		fmt.Println("    - anthropic")
@@ -185,7 +186,7 @@ func interactiveSetup(cfg *config.Config) error {
 	}
 
 	// Prompt for provider
-	defaultProvider := "qianfan"
+	defaultProvider := "siliconflow"
 	if hasProvider {
 		// Get first configured provider
 		for name := range cfg.Models.Providers {
@@ -275,6 +276,8 @@ func getDefaultBaseURL(provider string) string {
 		return "https://openrouter.ai/api/v1"
 	case "ollama":
 		return "http://localhost:11434/v1"
+	case "siliconflow":
+		return "https://api.siliconflow.cn/v1"
 	default:
 		return ""
 	}
@@ -292,6 +295,8 @@ func getDefaultModel(provider string) string {
 		return "anthropic/claude-sonnet-4"
 	case "ollama":
 		return "llama3.2"
+	case "siliconflow":
+		return "Pro/moonshotai/Kimi-K2.5"
 	default:
 		return ""
 	}
@@ -383,7 +388,7 @@ func printSummary(cfg *config.Config) {
 	fmt.Printf("     $ curl http://localhost:%d/health\n", cfg.Gateway.Port)
 	fmt.Println()
 	fmt.Println("  3. Connect via WebSocket:")
-	fmt.Printf("     ws://localhost:%d/ws\n", cfg.Gateway.Port)
+	fmt.Printf("     %s\n", config.GetGatewayWebSocketURL(cfg))
 	fmt.Println()
 	fmt.Println("  4. View configuration:")
 	fmt.Printf("     $ cat %s\n", internal.GetConfigPath())

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -98,8 +99,8 @@ func (m *Manager) ensureFile(filename string) error {
 		return err
 	}
 
-	// 从模板读取
-	templatePath := filepath.Join("templates", filename)
+	// 从模板读取（embed.FS 路径必须使用正斜杠，不能用 filepath.Join）
+	templatePath := path.Join("templates", filename)
 	content, err := templatesFS.ReadFile(templatePath)
 	if err != nil {
 		return fmt.Errorf("failed to read template %s: %w", filename, err)
@@ -258,8 +259,8 @@ func CopyFromFS(targetDir string) error {
 			return nil
 		}
 
-		// 计算相对路径
-		relPath, err := filepath.Rel("templates", path)
+		// 计算相对路径（WalkDir 的 path 为正斜杠，基准也用正斜杠）
+		relPath, err := filepath.Rel(filepath.FromSlash("templates"), filepath.FromSlash(path))
 		if err != nil {
 			return err
 		}

@@ -27,6 +27,9 @@ go.work.sum
 # env file
 .env
 
+# Windows reserved name (accidental `echo ... > nul` in repo root breaks `git add .`)
+/nul
+
 # Editor/IDE
 # .idea/
 # .vscode/
@@ -34,6 +37,10 @@ go.work.sum
 
 dist/
 .gocache/
+
+# Vite UI bundle for //go:embed (gateway/ui.go); build with scripts/build-full.ps1 or copy ui/dist here
+gateway/ui_dist/**
+!gateway/ui_dist/placeholder-for-embed.txt
 
 goclaw
 !goclaw/
